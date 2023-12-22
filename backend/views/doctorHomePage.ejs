@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor's Home Page</title>
+</head>
+<body>
+    <h1>Welcome, Doctor</h1>
+
+
+    <input type="text" id="d1" placeholder="Enter Doctor ID">
+<button id="viewAllListsButton">View All Patients</button>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+
+        $("#viewAllListsButton").on("click", function() {
+    
+            var doctorId1 = $("#d1").val();
+
+         
+            window.location.href = `/doctor/viewAllPatients/${doctorId1}`;
+        });
+    });
+</script>
+
+<br><br>
+<br><br>
+
+
+  <input type="text" id="d2" placeholder="Enter Doctor ID">
+<br><br>
+<input type="text" id="emailTextBox" placeholder="Enter New Email">
+<br><br>
+<button id="updateEmailButton">Update Email</button>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+
+
+    $(document).ready(function() {
+       
+        $("#updateEmailButton").on("click", function() {
+            var doctorId2 = $("#d2").val();
+            var newEmail = $("#emailTextBox").val();
+            console.log('Doctor ID:', doctorId2);
+            console.log('New Email:', newEmail);
+            $.ajax({
+                url: `/doctor/updateEmail/${doctorId2}`,
+                method: "PUT",
+                data: { email: newEmail },
+                success: function(response) {
+                    console.log("Email updated successfully.");
+                },
+                error: function(error) {
+                    console.error("Error updating email:", error);
+                }
+            });
+        });
+    });
+</script>
+<br><br>
+<br><br>
+
+  <input type="text" id="d3" placeholder="Enter Doctor ID">
+  <br><br>
+<input type="text" id="affiliationTextBox" placeholder="Enter New Affiliation">
+<br><br>
+<button id="updateAffiliationButton">Update Affiliation</button>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+
+
+        $(document).ready(function() {
+            $("#updateAffiliationButton").on("click", function() {
+    var doctorId3 = $("#d3").val();
+    var newAffiliation = $("#affiliationTextBox").val();
+    console.log('Doctor ID:', doctorId3);
+            console.log('New Email:', newAffiliation);
+
+    $.ajax({
+        url: `/doctor/updateAffiliation/${doctorId3}`,
+        method: "PUT",
+        data: { affiliation: newAffiliation },
+        success: function(response) {
+            console.log("Affiliation updated successfully.");
+        },
+        error: function(error) {
+            console.error("Error updating affiliation:", error);
+        }
+    });
+});
+});
+</script>
+<br><br>
+<br><br>
+
+
+    <input type="text" id="d4" placeholder="Enter Doctor ID">
+    <br><br>
+    <input type="text" id="hourlyRateTextBox" placeholder="Enter Hourly Rate">
+    <br><br>
+    <button id="updateHourlyRateButton">Update Hourly Rate</button>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+
+
+        $(document).ready(function() {
+            $("#updateHourlyRateButton").on("click", function() {
+    var doctorId4 = $("#d4").val();
+    var newHourlyRate = $("#hourlyRateTextBox").val();
+    console.log('Doctor ID:', doctorId4);
+            console.log('New Email:', newHourlyRate);
+
+    $.ajax({
+        url: `/doctor/updateHourlyRate/${doctorId4}`,
+        method: "PUT",
+        data: { hourlyRate: newHourlyRate },
+        success: function(response) {
+            console.log("Hourly Rate updated successfully.");
+        },
+        error: function(error) {
+            console.error("Error updating affiliation:", error);
+        }
+    });
+});
+});
+</script>
+    <br><br> 
+    <br><br>
+    <br><br>
+    <br><br>
+
+    <input type="text" id="doctorId0" placeholder="Enter Doctor ID">
+    <br><br>
+
+
+    <input type="text" id="patientName" placeholder="Enter Patient Name">
+    <br><br>
+
+    <button id="searchButton">Search For Patient</button>
+
+    <br><br>
+
+
+    <table id="patientInfo" style="display: none;"> 
+        <thead>
+            <tr>
+                <th>Full Name</th>
+                <th>ID</th>
+                <th>email</th>
+                <th>dob</th>
+                <th>username</th>
+                <th>gender</th>
+                <th>mobile</th>
+                
+            </tr>
+        </thead>
+        <tbody>
+          
+        </tbody>
+    </table>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#searchButton").on("click", function() {
+                
+                $("#patientInfo").show();
+
+               
+                var doctorId = $("#doctorId0").val();
+                var patientName = $("#patientName").val();
+
+               
+                $.ajax({
+                    url: `/doctor/searchPatientByName/${doctorId}`,
+                    method: "POST",
+                    data: { firstName: patientName },
+                    success: function(patients) {
+                       
+                        $("#patientInfo tbody").empty();
+
+                        if (patients.length > 0) {
+        
+                            patients.forEach(function(patient) {
+                      
+                                var familyString = patient.family.join(', ');
+
+                           
+                                $("#patientInfo tbody").append(
+                                    "<tr>" +
+                                        "<td>" + patient.firstName + " " + patient.lastName + "</td>" +
+                                        "<td><a href='/selectedPatient/" + patient._id + "'>" + patient._id + "</a></td>" +
+                                        "<td>" + patient.email + "</td>" +
+                                        "<td>" + patient.dob + "</td>" +
+                                        "<td>" + patient.username + "</td>" +
+                                        "<td>" + patient.gender + "</td>" +
+                                        "<td>" + patient.mobile + "</td>" +
+                                    "</tr>"
+                                );
+                            });
+                        } else {
+               
+                            $("#patientInfo tbody").append("<tr><td colspan='12'>No matching patients found</td></tr>");
+                        }
+                    },
+                    error: function(error) {
+                        console.error("Error searching for patients:", error);
+                    }
+                });
+            });
+        });
+    </script>
+    
+</body>
+</html>
+
+     <br><br> 
+     <br><br>
+     <br><br>
+
+
+  
+     <h1>View Appointments</h1>
+
+     <button id="viewAppointmentsButton">View Appointments</button>
+ 
+     <div id="formContainer" style="display: none;">
+         <form id="viewAppointmentsForm">
+             <label for="doctor">Doctor ID:</label>
+             <input type="text" id="doctor" name="doctor" placeholder="Enter doctor ID">
+ 
+             <label for="status">Status:</label>
+             <select id="status" name="status">
+                 <option value="All">All</option>
+                 <option value="done">Done</option>
+                 <option value="scheduled">Scheduled</option>
+                 <option value="cancelled">Cancelled</option>
+                 <option value="confirmed">Confirmed</option>
+             </select>
+ 
+             <label for="date_1">Date 1:</label>
+             <input type="datetime-local" id="date_1" name="date_1" step="1">
+ 
+             <label for ="date_2">Date 2:</label>
+             <input type="datetime-local" id="date_2" name="date_2" step="1">
+ 
+             <button type="submit" id="doneButton">Done</button>
+         </form>
+ 
+         <!-- Button to view upcoming appointments -->
+         <button id="upcomingAppointmentsButton">Upcoming Appointments</button>
+     </div>
+ 
+     <div id="appointmentResultsContainer">
+         <!-- Results will be displayed here -->
+     </div>
+ 
+     <script>
+         const viewAppointmentsButton = document.getElementById("viewAppointmentsButton");
+         const formContainer = document.getElementById("formContainer");
+         const viewAppointmentsForm = document.getElementById("viewAppointmentsForm");
+         const appointmentResultsContainer = document.getElementById("appointmentResultsContainer");
+         const doctorIdInput = document.getElementById("doctor"); // Input field for doctor ID
+ 
+         viewAppointmentsButton.addEventListener('click', function () {
+             viewAppointmentsButton.style.display = 'none';
+             formContainer.style.display = 'block';
+         });
+ 
+         // Assuming you set the doctor ID when the page loads, update this value accordingly
+        //  doctorIdInput.value = "YourDoctorID"; // Replace "YourDoctorID" with the actual ID
+ 
+         viewAppointmentsForm.addEventListener('submit', async function (event) {
+             event.preventDefault();
+             console.log("Form submitted"); // Log that the form was submitted
+ 
+             const formData = {
+                 doctor: doctorIdInput.value,
+                 status: document.getElementById("status").value,
+                 date_1: document.getElementById("date_1").value,
+                 date_2: document.getElementById("date_2").value
+             };
+             console.log("Form data:", formData); // Log the form data
+ 
+             try {
+                 console.log("Sending fetch request..."); // Log that the fetch request is being sent
+                 const response = await fetch('/doctor/filterapp', {
+                     method: 'POST',
+                     headers: {
+                         'Content-Type': 'application/json',
+                     },
+                     body: JSON.stringify(formData),
+                 });
+                 console.log("Fetch request completed."); // Log that the fetch request is being completed
+ 
+                 if (response.ok) {
+                     console.log("Response is OK"); // Log that the response is OK
+                     const data = await response.json();
+                     const filteredAppointments = data.filteredAppointments;
+                     const appointmentTable = generateAppointmentTable2(filteredAppointments);
+                     appointmentResultsContainer.innerHTML = appointmentTable;
+                 } else {
+                     console.error('Request failed with status:', response.status);
+                 }
+             } catch (error) {
+                 console.error('Error fetching appointment data:', error);
+             }
+         });
+         function generateAppointmentTable2(appointments) {
+             // Create a table based on the appointments data
+             let table = '<table>';
+             table += '<tr><th>Status</th><th>Date</th><th>patient id</th></tr>';
+             for (const appointment of appointments) {
+                 table += `<tr><td>${appointment.date}</td><td>${appointment.status}</td><td>${appointment.patientId}</td></tr>`;
+             }
+             table += '</table>';
+             return table;
+         }
+ 
+         function generateAppointmentTable(appointments) {
+             // Create a table based on the appointments data
+             let table = '<table>';
+             table += '<tr><th>Status</th><th>Date</th><th>Patient Name</th></tr>';
+             for (const appointment of appointments) {
+                 table += `<tr><td>${appointment.status}</td><td>${appointment.date}</td><td>${appointment.patientName}</td></tr>`;
+             }
+             table += '</table>';
+             return table;
+         }
+ 
+         // Add an event listener for the "Upcoming Appointments" button
+         const upcomingAppointmentsButton = document.getElementById("upcomingAppointmentsButton");
+         upcomingAppointmentsButton.addEventListener('click', async function () {
+             const doctorId = doctorIdInput.value;
+ console.log("doctor id:", doctorId)
+             try {
+                 const response = await fetch('/doctor/upcoming', {
+                     method: 'POST',
+                     headers: {
+                         'Content-Type': 'application/json',
+                     },
+                     body: JSON.stringify({ doctorId: doctorId }),
+                 });
+  if (response.ok) {
+                     const data = await response.json();
+                     console.log(" THE DATA ", data)
+ 
+                     const finalup = data.finalup;
+                     const appointmentTable = generateAppointmentTable(finalup);
+                     appointmentResultsContainer.innerHTML = appointmentTable;
+                 } else {
+                     console.error('Request failed with status:', response.status);
+                 }
+             } catch (error) {
+                 console.error('Error fetching upcoming appointments:', error);
+             }
+         });
+     </script>
+     </body>
+</html>
